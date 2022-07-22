@@ -1,7 +1,6 @@
 const modals = () => {
     let btnPressed = false;
 
-
     const scroll = calcScroll(); //width of scrolling element
 
     function showModal(modalSelector, displayStyle) {
@@ -24,6 +23,7 @@ const modals = () => {
         function hideModal() {
             windows.forEach(item => {
                 item.style.display = 'none';
+                item.classList.add('animated', 'fadeIn');
             });
 
             modal.style.display = 'none';
@@ -36,7 +36,7 @@ const modals = () => {
                 const target = e.target
                 if (target) {
                     e.preventDefault();
-                } 
+                }
 
                 btnPressed = true;
 
@@ -51,12 +51,12 @@ const modals = () => {
 
         close.addEventListener('click', () => {     
             hideModal();
-        })
+        });
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 hideModal();
             }
-        })
+        });
     }
 
     function showModalByTime(selector, time) { 
