@@ -954,6 +954,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var modals = function modals() {
+  var btnPressed = false;
   var scroll = calcScroll(); //width of scrolling element
 
   function showModal(modalSelector, displayStyle) {
@@ -964,12 +965,10 @@ var modals = function modals() {
     } else {
       document.body.style.marginRight = "".concat(scroll, "px");
     }
-
-    clearInterval(timeId);
   }
 
   function bindModal(triggerSelector, modalSelector, closeSelector) {
-    var closeClickOverlay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+    var destroy = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var trigger = document.querySelectorAll(triggerSelector),
         //click to show modal
     modal = document.querySelector(modalSelector),
@@ -993,6 +992,13 @@ var modals = function modals() {
           e.preventDefault();
         }
 
+        btnPressed = true;
+
+        if (destroy) {
+          //remove present after one click
+          item.remove();
+        }
+
         hideModal();
         showModal(modal, 'block');
       });
@@ -1001,7 +1007,7 @@ var modals = function modals() {
       hideModal();
     });
     modal.addEventListener('click', function (e) {
-      if (e.target === modal && closeClickOverlay) {
+      if (e.target === modal) {
         hideModal();
       }
     });
@@ -1035,9 +1041,22 @@ var modals = function modals() {
     return scrolledWidth;
   }
 
+  function openByScroll(selector) {
+    var scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight); // for very old browsers
+
+    window.addEventListener('scroll', function () {
+      if (!btnPressed && window.pageYOffset + document.documentElement.clientHeight >= scrollHeight) {
+        document.querySelector(selector).click();
+      }
+    });
+  }
+
   bindModal('.button-design', '.popup-design', '.popup-design .popup-close');
   bindModal('.button-consultation', '.popup-consultation', '.popup-consultation .popup-close');
-  showModalByTime('.popup-consultation', 5000);
+  /* showModalByTime('.popup-consultation', 5000); */
+
+  bindModal('.fixed-gift', '.popup-gift', '.popup-gift .popup-close', true);
+  openByScroll('.fixed-gift');
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (modals);

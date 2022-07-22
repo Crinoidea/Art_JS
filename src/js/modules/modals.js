@@ -1,4 +1,7 @@
 const modals = () => {
+    let btnPressed = false;
+
+
     const scroll = calcScroll(); //width of scrolling element
 
     function showModal(modalSelector, displayStyle) {
@@ -10,10 +13,9 @@ const modals = () => {
         } else {
             document.body.style.marginRight = `${scroll}px`;
         }
-        clearInterval(timeId);
     }
 
-    function bindModal(triggerSelector, modalSelector, closeSelector, closeClickOverlay = true) {
+    function bindModal(triggerSelector, modalSelector, closeSelector, destroy = false) {
         const trigger = document.querySelectorAll(triggerSelector), //click to show modal
               modal = document.querySelector(modalSelector),
               close = document.querySelector(closeSelector),
@@ -36,6 +38,12 @@ const modals = () => {
                     e.preventDefault();
                 } 
 
+                btnPressed = true;
+
+                if (destroy) { //remove present after one click
+                    item.remove();
+                }
+
                 hideModal();
                 showModal(modal, 'block');
             });
@@ -45,7 +53,7 @@ const modals = () => {
             hideModal();
         })
         modal.addEventListener('click', (e) => {
-            if (e.target === modal && closeClickOverlay) {
+            if (e.target === modal) {
                 hideModal();
             }
         })
@@ -84,9 +92,21 @@ const modals = () => {
         return scrolledWidth;
     }
 
+    function openByScroll(selector) {
+        let scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight); // for very old browsers
+
+        window.addEventListener('scroll', () => {
+            if (!btnPressed && (window.pageYOffset + document.documentElement.clientHeight >= scrollHeight)) {
+                document.querySelector(selector).click();
+            }
+        });
+    }
+
     bindModal('.button-design', '.popup-design', '.popup-design .popup-close');
     bindModal('.button-consultation', '.popup-consultation', '.popup-consultation .popup-close');
-    showModalByTime('.popup-consultation', 5000);
+    /* showModalByTime('.popup-consultation', 5000); */
+    bindModal('.fixed-gift', '.popup-gift', '.popup-gift .popup-close', true);
+    openByScroll('.fixed-gift')
 }
 
 export default modals;
