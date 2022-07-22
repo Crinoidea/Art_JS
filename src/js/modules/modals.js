@@ -10,6 +10,7 @@ const modals = () => {
         } else {
             document.body.style.marginRight = `${scroll}px`;
         }
+        clearInterval(timeId);
     }
 
     function bindModal(triggerSelector, modalSelector, closeSelector, closeClickOverlay = true) {
@@ -51,16 +52,17 @@ const modals = () => {
     }
 
     function showModalByTime(selector, time) { 
+        let isAnyModalShown = false;
+
         setTimeout(() => {
-            let d;
-            //show modal by time if no modal isn`t opened
+            //show modal by time if no modal is opened
             document.querySelectorAll('[data-modal]').forEach(item => { 
                 if (getComputedStyle(item).display !== 'none') {
-                    d = 'block';
+                    isAnyModalShown = true;
                 }
             });
 
-            if (!d) {
+            if (!isAnyModalShown) {
                 showModal(document.querySelector(selector), 'block');
             }
         }, time);

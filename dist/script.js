@@ -964,6 +964,8 @@ var modals = function modals() {
     } else {
       document.body.style.marginRight = "".concat(scroll, "px");
     }
+
+    clearInterval(timeId);
   }
 
   function bindModal(triggerSelector, modalSelector, closeSelector) {
@@ -1006,16 +1008,16 @@ var modals = function modals() {
   }
 
   function showModalByTime(selector, time) {
+    var isAnyModalShown = false;
     setTimeout(function () {
-      var d; //show modal by time if no modal isn`t opened
-
+      //show modal by time if no modal is opened
       document.querySelectorAll('[data-modal]').forEach(function (item) {
         if (getComputedStyle(item).display !== 'none') {
-          d = 'block';
+          isAnyModalShown = true;
         }
       });
 
-      if (!d) {
+      if (!isAnyModalShown) {
         showModal(document.querySelector(selector), 'block');
       }
     }, time);
